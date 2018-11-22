@@ -1,0 +1,7 @@
+django==2.1
+dj-static
+dj-database-url
+djangorestframework==3.9
+psycopg2==2.7
+requests
+gunicorn==19.9

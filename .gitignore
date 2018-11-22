@@ -1,0 +1,5 @@
+*.pyc
+*~
+staticfiles
+db.sqlite3
+db_reset
