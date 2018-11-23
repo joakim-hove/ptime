@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from ptime.work.models import *
+from ptime.server.models import *
 
 
 class Context(object):

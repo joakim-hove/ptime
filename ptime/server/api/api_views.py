@@ -5,7 +5,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 
-from ptime.work.models import *
+from ptime.server.models import *
 
 
 def start_task(request, project_id):

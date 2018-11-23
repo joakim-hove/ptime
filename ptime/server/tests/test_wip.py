@@ -2,7 +2,7 @@ from django.utils import timezone
 from django.test import TransactionTestCase, Client
 from django.db.utils import IntegrityError
 
-from ptime.work.models import *
+from ptime.server.models import *
 from .context import Context
 
 
