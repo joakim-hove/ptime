@@ -1,1 +1,1 @@
-web: gunicorn ptime.wsgi
+web: gunicorn project_timer.wsgi
