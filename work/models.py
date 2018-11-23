@@ -16,7 +16,7 @@ class Project(Model):
 
 
     def __str__(self):
-        return self.name
+        return self.short_name
 
 
 class Activity(Model):
@@ -26,7 +26,7 @@ class Activity(Model):
     project = ForeignKey(Project, on_delete=CASCADE)
 
     def __str__(self):
-        return self.name
+        return self.short_name
 
 
 
