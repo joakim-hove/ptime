@@ -1,5 +1,6 @@
 import datetime
 
+from django.forms.models import model_to_dict
 from django.core import serializers
 from django.db.models import *
 from django.contrib.auth.models import User
@@ -36,6 +37,16 @@ class TaskRecord(Model):
     project = ForeignKey(Project, on_delete=PROTECT)
     activity = ForeignKey(Activity, blank=True, null=True, on_delete=PROTECT)
     comment = CharField(max_length=512, blank=True, null=True)
+
+    def to_dict(self):
+        d = model_to_dict(self)
+        d["project"] = self.project.short_name
+        if not d["activity"] is None:
+            d["activity"] = self.activity.short_name
+
+        return d
+
+
 
 
 class WIP(Model):
