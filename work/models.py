@@ -1,5 +1,6 @@
 import datetime
 
+from django.core import serializers
 from django.db.models import *
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -37,7 +38,6 @@ class TaskRecord(Model):
     comment = CharField(max_length=512, blank=True, null=True)
 
 
-
 class WIP(Model):
     project = ForeignKey(Project, on_delete=CASCADE)
     activity = ForeignKey(Activity, on_delete=CASCADE, blank=True, null=True)
@@ -45,13 +45,6 @@ class WIP(Model):
     start_time = DateTimeField(default = timezone.now)
     comment = CharField(max_length=512, blank=True, null=True)
 
-
-    def __init__(self, *args, **kwargs):
-        if not "activity" in kwargs:
-            if "project" in kwargs:
-                project = kwargs["project"]
-                kwargs["activity"] = project.default_activity
-        super().__init__(*args, **kwargs)
 
 
     @classmethod
@@ -81,3 +74,18 @@ class WIP(Model):
             wip.delete()
         except cls.DoesNotExist:
             pass
+
+
+    @classmethod
+    def start(cls, who, project, start_time=None, activity=None):
+        if start_time is None:
+            start_time = timezone.now()
+
+        if activity is None:
+            activity = project.default_activity
+
+        wip = cls.objects.create(project = project,
+                                 who = who,
+                                 activity = activity,
+                                 start_time = start_time)
+        return wip

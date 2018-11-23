@@ -13,11 +13,11 @@ class Context(object):
                                          password = "Secret")
 
         self.project = Project.objects.create(short_name = "opm",
-                                              name = "OPM Project"
+                                              name = "OPM Project",
                                               description = "Long description")
 
         self.activity = Activity.objects.create(short_name = "operater",
-                                                name = "Implement support for OPERATER keyword"
+                                                description = "Implement support for OPERATER keyword",
                                                 project = self.project)
         self.object_list = [self.user1,
                             self.user2,

@@ -19,8 +19,8 @@ class WIPTest(TransactionTestCase):
         self.context.project.default_activity = self.context.activity
         self.context.save()
 
-        wip2 = WIP.objects.create(who = self.context.user2,
-                                  project = self.context.project)
+        wip2 = WIP.start(who = self.context.user2,
+                         project = self.context.project)
         self.assertEqual( wip2.activity, self.context.activity )
 
         with self.assertRaises(IntegrityError):
@@ -29,7 +29,6 @@ class WIPTest(TransactionTestCase):
 
         len0 = len(TaskRecord.objects.all())
         task_record = WIP.complete(self.context.user1)
-        print(task_record)
         self.assertIsNotNone( task_record )
         with self.assertRaises(WIP.DoesNotExist):
             wip1.refresh_from_db()
@@ -43,4 +42,5 @@ class WIPTest(TransactionTestCase):
 
 
         WIP.cancel(self.context.user2)
-        
+
+        wip = WIP.start(self.context.user2, self.context.project)
