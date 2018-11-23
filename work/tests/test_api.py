@@ -16,15 +16,16 @@ class WorkAPITest(TransactionTestCase):
 
 
     def test_start(self):
-        url = reverse("api.task.start", args = [self.context.project.short_name])
+        url = reverse("api.task.start", args = [self.context.project1.short_name])
         client = Client()
         response = client.get(url)
         self.assertEqual(response.status_code, 405)
 
         valid_params =  {"user" : self.context.user1.username,
-                         "project" : self.context.project.short_name}
+                         "project" : self.context.project1.short_name}
 
         response = client.post(url, json.dumps(valid_params), content_type="application/json")
         self.assertEqual(response.status_code, 201)
         data = json.loads(response.content.decode('utf-8'))
-
+        started_task = data["started_task"]
+        self.assertEqual(started_task["project"], self.context.project1.short_name)
