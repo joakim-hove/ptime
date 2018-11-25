@@ -19,6 +19,12 @@ class Project(Model):
     def __str__(self):
         return self.short_name
 
+    def activity_name(self):
+        if self.default_activity is None:
+            return self.short_name
+
+        return "{}/{}".format(self.short_name, self.default_activity.short_name)
+
 
 class Activity(Model):
     short_name = CharField(max_length=16)
@@ -51,7 +57,8 @@ class TaskRecord(Model):
 
     def __str__(self):
         hours, minutes, seconds = split_time(self.end_time - self.start_time)
-        return "{}: {} {:2d}:{:02d}".format(self.project_name, self.start_time, hours, minutes)
+        return "{}: {} {:2d}:{:02d}".format(self.project.activity_name(), self.start_time, hours, minutes)
+
 
 
 class WIP(Model):
