@@ -3,6 +3,8 @@ import os
 import requests
 
 
+from .response import Response
+
 class BaseClient(object):
     PTIME_URL = os.environ["PTIME_URL"]
     PTIME_USER = os.environ["PTIME_USER"]
@@ -13,8 +15,11 @@ class BaseClient(object):
     def run(self):
         data = self.post_data()
         data["user"] = self.PTIME_USER
-        response = requests.post(self.url(), json=data)
-        return response
+        r = requests.post(self.url(), json=data)
+        status_code = r.status_code
+        return Response(status_code, json.loads(r.text))
+
+
 
     def post_data(self):
         return {}
@@ -62,5 +67,7 @@ class PTimeClient(object):
     def run(self):
         return self.client.run()
 
+
 def get(argv):
-    pass
+    client = PTimeClient(argv)
+    return client.run()

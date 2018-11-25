@@ -41,7 +41,9 @@ class TaskRecord(Model):
     def to_dict(self):
         d = model_to_dict(self)
         d["project"] = self.project.short_name
-        if not d["activity"] is None:
+        if self.activity is None:
+            del d["activity"]
+        else:
             d["activity"] = self.activity.short_name
 
         return d

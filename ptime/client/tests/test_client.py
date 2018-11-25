@@ -23,4 +23,8 @@ class ClientTest(TransactionTestCase):
 
         client = PTimeClient(["start", "sleipner"])
         response = client.run()
-        print(response, response.text)
+        task = response.completed_task
+
+        client = PTimeClient(["stop"])
+        response = client.run()
+        task = response.completed_task

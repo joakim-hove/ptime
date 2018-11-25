@@ -29,7 +29,7 @@ class WorkAPITest(TransactionTestCase):
         data = json.loads(response.content.decode('utf-8'))
         started_task = data["started_task"]
         self.assertEqual(started_task["project"], self.context.project1.short_name)
-        self.assertIsNone(data["completed_task"])
+        self.assertFalse("completed_task" in data)
 
         response = client.post(url2, json.dumps(valid_params), content_type="application/json")
         self.assertEqual(response.status_code, 201)
@@ -48,7 +48,7 @@ class WorkAPITest(TransactionTestCase):
         response = client.post(stop_url , json.dumps({"user" : self.context.user1.username}), content_type="application/json")
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content.decode('utf-8'))
-        self.assertIsNone(data["completed_task"])
+        self.assertFalse("completed_task" in data)
 
         response = client.post(start_url , json.dumps({"user" : self.context.user1.username}), content_type="application/json")
         response = client.post(stop_url , json.dumps({"user" : self.context.user1.username}), content_type="application/json")
@@ -56,3 +56,5 @@ class WorkAPITest(TransactionTestCase):
         data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(data["completed_task"]["project"], self.context.project1.short_name)
 
+        response = client.post(stop_url , json.dumps({"user" : self.context.user1.username}), content_type="application/json")
+        self.assertEqual(response.status_code, 200)

@@ -31,17 +31,14 @@ def start_task(request, project_id):
     completed_task = WIP.complete(user)
     wip = WIP.start(user, start_project, start_time, activity = activity)
 
-    task = None
-    if completed_task:
-        task = completed_task.to_dict()
-    response = {"completed_task" : task,
-                "started_task" : {"project" : wip.project.short_name,
+    response = {"started_task" : {"project" : wip.project.short_name,
                                   "start_time" : wip.start_time}}
+    if completed_task:
+        response["completed_task"] = completed_task.to_dict()
 
     return JsonResponse(response, status=201)
 
-
-
+@csrf_exempt
 def stop_task(request):
     if not request.method == "POST":
         return HttpResponse("Only method POST allowed", status = 405)
@@ -58,6 +55,6 @@ def stop_task(request):
         response = {"completed_task" : completed_task.to_dict() }
         return JsonResponse(response, status=201)
     else:
-        response = {"completed_task" : None}
+        response = {}
         return JsonResponse(response, status=200)
 
