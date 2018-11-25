@@ -57,7 +57,7 @@ class TaskRecord(Model):
 
     def __str__(self):
         hours, minutes, seconds = split_time(self.end_time - self.start_time)
-        return "{}: {} {:2d}:{:02d}".format(self.project.activity_name(), self.start_time, hours, minutes)
+        return "{}: {}  {:2d}:{:02d}".format(self.project.activity_name(), self.start_time.strftime("%d-%m-%Y"), hours, minutes)
 
 
 
