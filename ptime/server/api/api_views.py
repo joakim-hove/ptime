@@ -1,3 +1,4 @@
+from django.views.decorators.csrf import csrf_exempt
 import json
 
 from django.utils import timezone
@@ -8,6 +9,7 @@ from django.contrib.auth.models import User
 from ptime.server.models import *
 
 
+@csrf_exempt
 def start_task(request, project_id):
     if not request.method == "POST":
         return HttpResponse("Only method POST allowed", status = 405)
