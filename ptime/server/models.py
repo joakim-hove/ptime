@@ -6,6 +6,7 @@ from django.db.models import *
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+from ptime.util import *
 
 class Project(Model):
     short_name = CharField(max_length=16, unique=True)
@@ -48,7 +49,9 @@ class TaskRecord(Model):
 
         return d
 
-
+    def __str__(self):
+        hours, minutes, seconds = split_time(self.end_time - self.start_time)
+        return "{}: {} {:2d}:{:02d}".format(self.project_name, self.start_time, hours, minutes)
 
 
 class WIP(Model):

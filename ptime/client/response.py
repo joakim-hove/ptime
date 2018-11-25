@@ -1,22 +1,4 @@
-import datetime
-DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
-
-def _parse_date(date_str):
-    return datetime.datetime.strptime(date_str, DATETIME_FORMAT)
-
-
-class Duration(object):
-
-    def __init__(self, dt):
-        seconds = dt.total_seconds()
-        self.hours   = int(seconds // 3600)
-        self.minutes = int((seconds - self.hours * 3600) // 60)
-        self.seconds = int(seconds - self.hours * 3600 - self.minutes * 60)
-
-
-    def __str__(self):
-        return "{:2d}:{:02d}".format(self.hours, self.minutes)
-
+from ptime.util import *
 
 
 class Task(object):
@@ -26,9 +8,9 @@ class Task(object):
             self.project = "{0}/{1}".format(data["project"], data["activity"])
         else:
             self.project = data["project"]
-        self.start_time = _parse_date( data["start_time"] )
+        self.start_time = parse_date( data["start_time"] )
         if "end_time" in data:
-            self.end_time = _parse_date(data["end_time"])
+            self.end_time = parse_date(data["end_time"])
             self.duration = Duration( self.end_time - self.start_time )
         else:
             self.end_time = None
