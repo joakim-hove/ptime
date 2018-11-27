@@ -22,8 +22,6 @@ class WIPTest(TransactionTestCase):
         wip2 = WIP.start(who = self.context.user2,
                          project = self.context.project1)
         self.assertEqual( wip2.activity, self.context.activity1 )
-        self.assertEqual( self.context.project1.activity_name(), "{}/{}".format(self.context.project1.short_name,
-                                                                                self.context.activity1.short_name))
 
         with self.assertRaises(IntegrityError):
             wip3 = WIP.objects.create(who = self.context.user2,

@@ -2,7 +2,13 @@ import datetime
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 def parse_date(date_str):
-    return datetime.datetime.strptime(date_str, DATETIME_FORMAT)
+    tz_time = datetime.datetime.strptime(date_str, DATETIME_FORMAT)
+    return tz_time
+
+def format_time(dt):
+    diff = datetime.datetime.now() - datetime.datetime.utcnow()
+    dt += diff
+    return dt.strftime("%H:%M")
 
 
 class Duration(object):

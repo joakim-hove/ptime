@@ -37,6 +37,11 @@ class WorkAPITest(TransactionTestCase):
         self.assertEqual(data["started_task"]["project"], self.context.project2.short_name)
         self.assertEqual(data["completed_task"]["project"], self.context.project1.short_name)
 
+        url404 = reverse("api.task.start", args = ["does-not-exist"])
+        response = client.post(url404, json.dumps(valid_params), content_type = "application/json")
+        self.assertEqual(response.status_code, 404)
+
+
 
     def test_stop(self):
         stop_url = reverse("api.task.stop")
@@ -58,3 +63,23 @@ class WorkAPITest(TransactionTestCase):
 
         response = client.post(stop_url , json.dumps({"user" : self.context.user1.username}), content_type="application/json")
         self.assertEqual(response.status_code, 200)
+
+
+    def test_status(self):
+        stop_url = reverse("api.task.stop")
+        start_url = reverse("api.task.start", args=[self.context.project1.short_name])
+        status_url = reverse("api.status")
+        client = Client()
+        response = client.get(status_url)
+        self.assertEqual(response.status_code, 403)
+
+        response = client.get(status_url, {"user" : self.context.user1.username})
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content.decode("utf-8"))
+        self.assertNotIn("active_task", data)
+
+        response = client.post(start_url , json.dumps({"user" : self.context.user1.username}), content_type="application/json")
+        response = client.get(status_url, {"user" : self.context.user1.username})
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content.decode("utf-8"))
+        self.assertIn("active_task", data)
