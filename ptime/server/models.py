@@ -54,7 +54,7 @@ class TaskRecord(Model):
         hours, minutes, seconds = split_time(self.end_time - self.start_time)
         activity_name = self.project.short_name
         if not self.activity is None:
-            actvity_name += "/{}".format(self.actvity.short_name)
+            activity_name += "/{}".format(self.actvity.short_name)
         return "{}: {}  {:2d}:{:02d}".format(activity_name, self.start_time.strftime("%d-%m-%Y"), hours, minutes)
 
 
