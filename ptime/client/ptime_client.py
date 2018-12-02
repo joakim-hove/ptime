@@ -17,7 +17,7 @@ class GetClient(BaseClient):
         try:
             r = requests.get(self.url(), params=self.get_data)
         except:
-            sys.exit("Request to server:{} failed".format(PTIME_URL))
+            sys.exit("Request to server:{} failed".format(self.PTIME_URL))
 
         status_code = r.status_code
         return (status_code, r.text)
@@ -37,7 +37,7 @@ class PostClient(BaseClient):
         try:
             r = requests.post(self.url(), json=self.post_data)
         except:
-            sys.exit("Request to server:{} failed".format(PTIME_URL))
+            sys.exit("Request to server:{} failed".format(self.PTIME_URL))
 
         status_code = r.status_code
         return (status_code, r.text)
@@ -60,7 +60,7 @@ class StartClient(PostClient):
             self.post_data["activity"] = argv[1]
 
     def url(self):
-        return "{0}/api/task/start/{1}/".format(PTIME_URL, self.project_id)
+        return "{0}/api/task/start/{1}/".format(self.PTIME_URL, self.project_id)
 
 
 
@@ -70,7 +70,7 @@ class StopClient(PostClient):
         super().__init__()
 
     def url(self):
-        return "{0}/api/task/stop/".format(PTIME_URL)
+        return "{0}/api/task/stop/".format(self.PTIME_URL)
 
 
 class StatusClient(GetClient):
@@ -79,7 +79,7 @@ class StatusClient(GetClient):
         super().__init__()
 
     def url(self):
-        return "{0}/api/status/".format(PTIME_URL)
+        return "{0}/api/status/".format(self.PTIME_URL)
 
 
 
@@ -88,12 +88,8 @@ class PTimeClient(object):
                 "stop" : StopClient,
                 "status" : StatusClient }
 
-    def __init__(self, argv):
-        if len(argv) == 0:
-            raise ValueError("Empty argv vector - invalid")
-
-        cmd = argv[0]
-        self.client = self.commands[cmd](argv[1:])
+    def __init__(self, cmd, argv):
+        self.client = self.commands[cmd](argv)
 
 
     def post_data(self):
@@ -107,7 +103,11 @@ class PTimeClient(object):
 
 
 def run(argv):
-    client = PTimeClient(argv)
+    cmd = argv[0]
+    if not cmd in PTimeClient.commands:
+        sys.exit("No such subcommand:{}".format(cmd))
+
+    client = PTimeClient(cmd, argv[1:])
     status_code, text = client.run()
     if status_code in [200,201]:
         return json.loads(text)
