@@ -29,7 +29,7 @@ def start_task(request, project_id):
 
     if "activity" in params:
         try:
-            activity = Activity.objects.get(short_name=params["activity"])
+            activity = Activity.objects.get(project=start_project, short_name=params["activity"])
         except Activity.DoesNotExist:
             return HttpResponse("Activity: {} does not exist".format(params["actvity"]), status=404)
     else:
@@ -47,7 +47,7 @@ def start_task(request, project_id):
     started_task = {"project" : wip.project.short_name,
                     "start_time" : wip.start_time}
     if wip.activity:
-        started_task["activity"] = wip.activity.shprt_name
+        started_task["activity"] = wip.activity.short_name
 
     response = {"started_task" : started_task}
 

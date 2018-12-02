@@ -4,7 +4,7 @@ from .time import *
 def fmt_task(prefix, task):
     project = task["project"]
     if "activity" in task:
-        project += "/{}".fomat(task["activity"])
+        project += "/{}".format(task["activity"])
 
     start_time = parse_date(task["start_time"])
     start_str = format_time(start_time)

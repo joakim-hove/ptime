@@ -37,6 +37,11 @@ class WorkAPITest(TransactionTestCase):
         self.assertEqual(data["started_task"]["project"], self.context.project2.short_name)
         self.assertEqual(data["completed_task"]["project"], self.context.project1.short_name)
 
+        response = client.post(url2, json.dumps({"user" : self.context.user1.username, "activity" : self.context.activity2.short_name}), content_type="application/json")
+        self.assertEqual(response.status_code, 201)
+        data = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(data["started_task"]["project"], self.context.project2.short_name)
+
         url404 = reverse("api.task.start", args = ["does-not-exist"])
         response = client.post(url404, json.dumps(valid_params), content_type = "application/json")
         self.assertEqual(response.status_code, 404)
