@@ -1,7 +1,7 @@
 from .time import *
 
 
-def print_task(prefix, task):
+def fmt_task(prefix, task):
     project = task["project"]
     if "activity" in task:
         project += "/{}".fomat(task["activity"])
@@ -28,6 +28,5 @@ def print_task(prefix, task):
         dur_str = ""
 
 
-
     s = "{:16}: {:16}  {:5s} {:6s}   {}".format(prefix, project, start_str, end_str, dur_str)
-    print(s)
+    return s

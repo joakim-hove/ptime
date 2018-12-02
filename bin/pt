@@ -4,31 +4,10 @@ from ptime.util import *
 import sys
 
 
-
-def print_completed_task(task):
-    s = "Completed task: {0:16}   {1:02d}:{2:02d} -- {3:02d}:{4:02d}  [{5} hours {6} minutes]".format( task.project,
-                                                                                                       task.start_time.hour,
-                                                                                                       task.start_time.minute,
-                                                                                                       task.end_time.hour,
-                                                                                                       task.end_time.minute,
-                                                                                                       task.duration.hours,
-                                                                                                       task.duration.minutes)
-    print(s)
-
-
-def print_started_task(task):
-    s = "Started task:   {0:16}   {1:02d}:{2:02d} -- ".format( task.project,
-                                                               task.start_time.hour,
-                                                               task.start_time.minute)
-    print(s)
-
-
-
 data = client.run(sys.argv[1:])
 for prefix,task_key in [("Completed task", "completed_task"),
                         ("Started task", "started_task"),
                         ("Active task", "active_task")]:
     if task_key in data:
-        print_task(prefix, data[task_key])
-
+        print(fmt_task(prefix, data[task_key]))
 

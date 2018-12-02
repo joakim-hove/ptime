@@ -16,26 +16,22 @@ class ClientTest(TransactionTestCase):
 
 
     def test_command(self):
-        with self.assertRaises(ValueError):
-            client = PTimeClient([])
-
-
         with self.assertRaises(KeyError):
-            client = PTimeClient(["UNKNONW_COMMAND"])
+            client = PTimeClient("unknown_command")
 
         with self.assertRaises(ValueError):
-            client = PTimeClient(["start"])
+            client = PTimeClient("start")
 
 
-        client = PTimeClient(["stop"])
+        client = PTimeClient("stop")
         data = client.post_data()
         self.assertIn("user", data)
 
-        client = PTimeClient(["start", "sleipner"])
+        client = PTimeClient("start", ["sleipner"])
         data = client.post_data()
         self.assertIn("user", data)
 
-        client = PTimeClient(["start", "sleipner", "python3"])
+        client = PTimeClient("start", ["sleipner", "python3"])
         data = client.post_data()
         self.assertIn("user", data)
         self.assertIn("activity", data)
@@ -49,7 +45,7 @@ class ClientTest(TransactionTestCase):
             self.assertNotIn("completed_task", data)
 
 
-        client = PTimeClient(["stop"])
+        client = PTimeClient("stop")
         if self.run_client:
             status, data= client.run()
 
@@ -58,5 +54,5 @@ class ClientTest(TransactionTestCase):
             self.assertNotIn("started_task", data)
             self.assertNotIn("active_task", data)
 
-        
+
 

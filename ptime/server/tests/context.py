@@ -27,6 +27,7 @@ class Context(object):
         self.activity2 = Activity.objects.create(short_name = "operater",
                                                 description = "Implement support for OPERATER keyword",
                                                 project = self.project2)
+
         self.object_list = [self.user1,
                             self.user2,
                             self.project1,

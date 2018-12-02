@@ -95,8 +95,7 @@ def status(request):
     response = {}
     try:
         wip = WIP.objects.get( who=user )
-        response["active_task"] = {"project" : wip.project.short_name,
-                                   "start_time" : wip.start_time}
+        response["active_task"] = wip.task_dict()
     except WIP.DoesNotExist:
         pass
 

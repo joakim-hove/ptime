@@ -88,7 +88,7 @@ class PTimeClient(object):
                 "stop" : StopClient,
                 "status" : StatusClient }
 
-    def __init__(self, cmd, argv):
+    def __init__(self, cmd, argv = []):
         self.client = self.commands[cmd](argv)
 
 

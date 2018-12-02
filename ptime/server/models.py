@@ -20,6 +20,7 @@ class Project(Model):
         return self.short_name
 
 
+
 class Activity(Model):
     short_name = CharField(max_length=16)
     start_time = DateField(default = datetime.date.today)
@@ -109,3 +110,13 @@ class WIP(Model):
                                  activity = activity,
                                  start_time = start_time)
         return wip
+
+
+    def task_dict(self):
+        d = {"project" : self.project.short_name,
+             "start_time" : self.start_time }
+
+        if self.activity:
+            d["activity"] = self.activity
+
+        return d
