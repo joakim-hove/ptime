@@ -117,6 +117,6 @@ class WIP(Model):
              "start_time" : self.start_time }
 
         if self.activity:
-            d["activity"] = self.activity
+            d["activity"] = self.activity.short_name
 
         return d

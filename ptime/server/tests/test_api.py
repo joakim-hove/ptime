@@ -88,3 +88,10 @@ class WorkAPITest(TransactionTestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content.decode("utf-8"))
         self.assertIn("active_task", data)
+
+        response = client.post(start_url , json.dumps({"user" : self.context.user1.username, "activity" : self.context.activity1.short_name}), content_type="application/json")
+        response = client.get(status_url, {"user" : self.context.user1.username})
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content.decode("utf-8"))
+        self.assertIn("active_task", data)
+        self.assertIn("activity", data["active_task"])
