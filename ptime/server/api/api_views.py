@@ -114,6 +114,6 @@ def get(request):
         return HttpResponse("Invalid user:{}".format(user), status=403)
 
     record_query = TaskRecord.objects.all()
-    response = { "task_list" : [ record.to_dict for record in record_query ]}
+    response = { "task_list" : [ record.to_dict() for record in record_query ]}
 
     return JsonResponse(response, status=200)
