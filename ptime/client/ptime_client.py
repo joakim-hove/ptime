@@ -82,11 +82,22 @@ class StatusClient(GetClient):
         return "{0}/api/status/".format(self.PTIME_URL)
 
 
+class GetClient(GetClient):
+
+    def __init__(self, argv):
+        super().__init__()
+
+    def url(self):
+        return "{0}/api/get/".format(self.PTIME_URL)
+
+
+
 
 class PTimeClient(object):
     commands = {"start" : StartClient,
                 "stop" : StopClient,
-                "status" : StatusClient }
+                "status" : StatusClient,
+                "get" : GetClient }
 
     def __init__(self, cmd, argv = []):
         self.client = self.commands[cmd](argv)

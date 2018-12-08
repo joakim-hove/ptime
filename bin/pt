@@ -4,6 +4,10 @@ from ptime.util import *
 import sys
 
 
+def summarize(data):
+    print(data)
+
+
 data = client.run(sys.argv[1:])
 for prefix,task_key in [("Completed task", "completed_task"),
                         ("Started task", "started_task"),
@@ -11,3 +15,5 @@ for prefix,task_key in [("Completed task", "completed_task"),
     if task_key in data:
         print(fmt_task(prefix, data[task_key]))
 
+if sys.argv[1] == "get":
+    summarize(data)

@@ -100,3 +100,21 @@ def status(request):
         pass
 
     return JsonResponse(response, status=200)
+
+
+
+def get(request):
+    user = request.GET.get("user")
+    if not user:
+        return HttpResponse("Missing user", status=403)
+
+    try:
+        user = User.objects.get( username = user )
+    except User.DoesNotExist:
+        return HttpResponse("Invalid user:{}".format(user), status=403)
+
+    response = {}
+    record_query = TaskRecord.objects.all()
+    response= { "task_list" : [ record.to_dict for record in record_query ]}
+
+    return JsonResponse(response, status=200)
