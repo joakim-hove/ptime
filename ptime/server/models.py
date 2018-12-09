@@ -43,6 +43,7 @@ class TaskRecord(Model):
     def to_dict(self):
         d = model_to_dict(self)
         d["project"] = self.project.short_name
+        d["seconds"] = self.seconds()
         if self.activity is None:
             del d["activity"]
         else:
@@ -57,6 +58,10 @@ class TaskRecord(Model):
             activity_name += "/{}".format(self.activity.short_name)
         return "{}: {}  {:2d}:{:02d}".format(activity_name, self.start_time.strftime("%d-%m-%Y"), hours, minutes)
 
+
+    def seconds(self):
+        dt = self.end_time - self.start_time
+        return dt.total_seconds()
 
 
 class WIP(Model):
