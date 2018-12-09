@@ -61,7 +61,7 @@ class TaskRecord(Model):
 
     def seconds(self):
         dt = self.end_time - self.start_time
-        return dt.total_seconds()
+        return int(dt.total_seconds())
 
 
 class WIP(Model):
