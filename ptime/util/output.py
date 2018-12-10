@@ -34,13 +34,13 @@ def fmt_task(prefix, task):
 
 
 
-def print_summary(start, end, sum_dict):
+def print_summary(start_time, end_time, sum_dict):
     width = 70
     short_width = 50
     print("\n")
     print("=" * width)
-    print("Start: {}".format( format_time( parse_date(start_time))))
-    print("End:   {}".format( format_time( parse_date(end_time))))
+    print("Start: {}".format( format_date( parse_date(start_time))))
+    print("End:   {}".format( format_date( parse_date(end_time))))
     print("-" * width)
 
     for project in sum_dict.keys():

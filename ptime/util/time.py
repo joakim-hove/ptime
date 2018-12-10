@@ -10,7 +10,8 @@ def format_time(dt):
     dt += diff
     return dt.strftime("%H:%M")
 
-
+def format_date(dt):
+    return dt.strftime("%Y-%m-%d")
 
 
 
