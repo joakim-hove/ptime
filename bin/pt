@@ -5,7 +5,10 @@ import sys
 
 
 def summarize(data):
-    print(data)
+    sum_dict = task_summary(data["task_list"])
+    start_time = data["start_time"]
+    end_time = data["end_time"]
+    print_summary(start_time, end_time, sum_dict)
 
 
 data = client.run(sys.argv[1:])

@@ -109,6 +109,8 @@ class WorkAPITest(TransactionTestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content.decode("utf-8"))
         self.assertIn("task_list", data)
+        self.assertIn("start_time", data)
+        self.assertIn("end_time", data)
 
         self.assertTrue(len(data["task_list"]) > 0)
         for task in data["task_list"]:

@@ -1,6 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 import json
 
+from django.db.models import Max, Min
 from django.utils import timezone
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
@@ -113,7 +114,14 @@ def get(request):
     except User.DoesNotExist:
         return HttpResponse("Invalid user:{}".format(user), status=403)
 
+
+    start_time = None
+    end_time = None
     record_query = TaskRecord.objects.all()
-    response = { "task_list" : [ record.to_dict() for record in record_query ]}
+    time_range = record_query.aggregate(start_time = Min('start_time'),
+                                        end_time = Max('start_time'))
+    response = { "task_list" : [ record.to_dict() for record in record_query ],
+                 "start_time" : time_range["start_time"],
+                 "end_time" : time_range["end_time"]}
 
     return JsonResponse(response, status=200)

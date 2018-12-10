@@ -33,5 +33,8 @@ class Duration(object):
 
 
 def split_time(dt):
+    if not isinstance(dt, datetime.timedelta):
+        dt = datetime.timedelta( seconds = dt )
+
     dur = Duration(dt)
     return dur.split()
