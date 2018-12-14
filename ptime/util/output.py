@@ -43,6 +43,7 @@ def print_summary(start_time, end_time, sum_dict):
     print("End:   {}".format( format_date( parse_date(end_time))))
     print("-" * width)
 
+    project_count = 0
     for project in sum_dict.keys():
         total_time = sum_dict[project]["__total__"]
         hours, minutes, _ = split_time( total_time )
@@ -57,8 +58,9 @@ def print_summary(start_time, end_time, sum_dict):
                 time_string = "{:2d}:{:02d}".format(hours, minutes)
                 pad = " " * (short_width - len(project) - len(time_string) - len(key) - 1)
                 print("{}/{}{}{}".format(project, key, pad, time_string))
-
-
+        project_count += 1
+        if project_count < len(sum_dict.keys()):
+            print()
 
     print("=" * width)
     print("\n")
