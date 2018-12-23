@@ -6,12 +6,12 @@ def fmt_task(prefix, task):
     if "activity" in task:
         project += "/{}".format(task["activity"])
 
-    start_time = parse_date(task["start_time"])
+    start_time = parse_tzdate(task["start_time"])
     start_str = format_time(start_time)
 
     end_time = None
     if "end_time" in task:
-        end_time = parse_date(task["end_time"])
+        end_time = parse_tzdate(task["end_time"])
     else:
         dt = datetime.datetime.utcnow() - start_time
         if dt.total_seconds() > 1:
@@ -39,8 +39,8 @@ def print_summary(start_time, end_time, sum_dict):
     short_width = 50
     print("\n")
     print("=" * width)
-    print("Start: {}".format( format_date( parse_date(start_time))))
-    print("End:   {}".format( format_date( parse_date(end_time))))
+    print("Start: {}".format( format_date( parse_tzdate(start_time))))
+    print("End:   {}".format( format_date( parse_tzdate(end_time))))
     print("-" * width)
 
     project_count = 0

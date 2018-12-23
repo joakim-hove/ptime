@@ -2,6 +2,9 @@ import sys
 import json
 import os
 import requests
+import datetime
+from argparse import ArgumentParser
+
 
 class BaseClient(object):
     PTIME_URL = os.environ["PTIME_URL"]
@@ -82,7 +85,7 @@ class StatusClient(GetClient):
         return "{0}/api/status/".format(self.PTIME_URL)
 
 
-class GetClient(GetClient):
+class TaskListClient(GetClient):
 
     def __init__(self, argv):
         super().__init__()
@@ -91,13 +94,17 @@ class GetClient(GetClient):
         return "{0}/api/get/".format(self.PTIME_URL)
 
 
+class SummaryClient(TaskListClient):
+    pass
+
 
 
 class PTimeClient(object):
     commands = {"start" : StartClient,
                 "stop" : StopClient,
                 "status" : StatusClient,
-                "get" : GetClient }
+                "list" : TaskListClient,
+                "sum" : SummaryClient }
 
     def __init__(self, cmd, argv = []):
         self.client = self.commands[cmd](argv)
@@ -113,8 +120,27 @@ class PTimeClient(object):
         return self.client.run()
 
 
+def make_datetime(input_string):
+    return datetime.datetime.now()
+
+
+
+def parse_args(argv):
+    argparser = ArgumentParser()
+    argparser.add_argument("cmd")
+    argparser.add_argument("project", nargs="?")
+    argparser.add_argument("activity", nargs="?")
+
+    argparser.add_argument("--start", type=make_datetime, help="Start time")
+    argparser.add_argument("--end", type=str, help="End time")
+
+    return argparser.parse_args( argv )
+
+
 def run(argv):
-    cmd = argv[0]
+    options = parse_args(argv)
+    cmd = options.cmd
+
     if not cmd in PTimeClient.commands:
         sys.exit("No such subcommand:{}".format(cmd))
 

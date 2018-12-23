@@ -1,7 +1,8 @@
 import datetime
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
+TIME_ZONE = "Europe/Oslo"
 
-def parse_date(date_str):
+def parse_tzdate(date_str):
     tz_time = datetime.datetime.strptime(date_str, DATETIME_FORMAT)
     return tz_time
 

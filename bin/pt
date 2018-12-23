@@ -18,5 +18,8 @@ for prefix,task_key in [("Completed task", "completed_task"),
     if task_key in data:
         print(fmt_task(prefix, data[task_key]))
 
-if sys.argv[1] == "get":
+if sys.argv[1] == "sum":
     summarize(data)
+
+if sys.argv[1] == "list":
+    print(data)
