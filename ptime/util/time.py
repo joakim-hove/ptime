@@ -1,10 +1,11 @@
 import datetime
+import django.utils.dateparse
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 TIME_ZONE = "Europe/Oslo"
 
-def parse_tzdate(date_str):
-    tz_time = datetime.datetime.strptime(date_str, DATETIME_FORMAT)
-    return tz_time
+def parse_date(date_str):
+    dt = django.utils.dateparse.parse_datetime(date_str)
+    return dt
 
 def format_time(dt):
     diff = datetime.datetime.now() - datetime.datetime.utcnow()
