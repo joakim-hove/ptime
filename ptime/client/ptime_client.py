@@ -11,9 +11,15 @@ class BaseClient(object):
     PTIME_USER = os.environ["PTIME_USER"]
 
 
+    def __init__(self, options):
+        self.project_id = options.project
+        self.activity = options.activity
+
+
 class GetClient(BaseClient):
 
-    def __init__(self):
+    def __init__(self, options):
+        super().__init__(options)
         self.get_data = {"user" : self.PTIME_USER }
 
     def run(self):
@@ -33,7 +39,8 @@ class GetClient(BaseClient):
 
 class PostClient(BaseClient):
 
-    def __init__(self):
+    def __init__(self, options):
+        super().__init__(options)
         self.post_data = {"user" : self.PTIME_USER }
 
     def run(self):
@@ -53,14 +60,13 @@ class PostClient(BaseClient):
 
 class StartClient(PostClient):
 
-    def __init__(self, argv):
-        super().__init__()
-        if len(argv) == 0:
-            raise ValueError("Missing project argument")
+    def __init__(self, options):
+        super().__init__(options)
+        if self.project_id is None:
+            raise ValueError("Missing project id")
 
-        self.project_id = argv[0]
-        if len(argv) >= 2:
-            self.post_data["activity"] = argv[1]
+        if self.activity:
+            self.post_data["activity"] = options.activity
 
     def url(self):
         return "{0}/api/task/start/{1}/".format(self.PTIME_URL, self.project_id)
@@ -69,8 +75,8 @@ class StartClient(PostClient):
 
 class StopClient(PostClient):
 
-    def __init__(self, argv):
-        super().__init__()
+    def __init__(self, options):
+        super().__init__(options)
 
     def url(self):
         return "{0}/api/task/stop/".format(self.PTIME_URL)
@@ -78,8 +84,8 @@ class StopClient(PostClient):
 
 class StatusClient(GetClient):
 
-    def __init__(self, argv):
-        super().__init__()
+    def __init__(self, options):
+        super().__init__(options)
 
     def url(self):
         return "{0}/api/status/".format(self.PTIME_URL)
@@ -87,8 +93,8 @@ class StatusClient(GetClient):
 
 class TaskListClient(GetClient):
 
-    def __init__(self, argv):
-        super().__init__()
+    def __init__(self, options):
+        super().__init__(options)
 
     def url(self):
         return "{0}/api/get/".format(self.PTIME_URL)
@@ -106,9 +112,8 @@ class PTimeClient(object):
                 "list" : TaskListClient,
                 "sum" : SummaryClient }
 
-    def __init__(self, cmd, argv = []):
-        self.client = self.commands[cmd](argv)
-
+    def __init__(self, cmd, options):
+        self.client = self.commands[cmd](options)
 
     def post_data(self):
         return self.client.post_data
@@ -127,7 +132,6 @@ def make_datetime(input_string):
 
 def parse_args(argv):
     argparser = ArgumentParser()
-    argparser.add_argument("cmd")
     argparser.add_argument("project", nargs="?")
     argparser.add_argument("activity", nargs="?")
 
@@ -138,13 +142,13 @@ def parse_args(argv):
 
 
 def run(argv):
-    options = parse_args(argv)
-    cmd = options.cmd
+    cmd = argv[0]
+    options = parse_args(argv[1:])
 
     if not cmd in PTimeClient.commands:
         sys.exit("No such subcommand:{}".format(cmd))
 
-    client = PTimeClient(cmd, argv[1:])
+    client = PTimeClient(cmd, options)
     status_code, text = client.run()
     if status_code in [200,201]:
         return json.loads(text)

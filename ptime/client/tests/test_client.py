@@ -3,7 +3,7 @@ from django.test import TransactionTestCase, Client
 
 from ptime.server.tests.context import Context as ServerContext
 from ptime.client import PTimeClient, run
-from ptime.client.ptime_client import BaseClient
+from ptime.client.ptime_client import BaseClient, parse_args
 
 
 class ClientTest(TransactionTestCase):
@@ -17,21 +17,21 @@ class ClientTest(TransactionTestCase):
 
     def test_command(self):
         with self.assertRaises(KeyError):
-            client = PTimeClient("unknown_command")
+            client = PTimeClient("unknown_command", None)
 
         with self.assertRaises(ValueError):
-            client = PTimeClient("start")
+            client = PTimeClient("start", parse_args([]))
 
 
-        client = PTimeClient("stop")
+        client = PTimeClient("stop", parse_args([]))
         data = client.post_data()
         self.assertIn("user", data)
 
-        client = PTimeClient("start", ["sleipner"])
+        client = PTimeClient("start", parse_args(["sleipner"]))
         data = client.post_data()
         self.assertIn("user", data)
 
-        client = PTimeClient("start", ["sleipner", "python3"])
+        client = PTimeClient("start", parse_args(["sleipner", "python3"]))
         data = client.post_data()
         self.assertIn("user", data)
         self.assertIn("activity", data)
@@ -45,7 +45,7 @@ class ClientTest(TransactionTestCase):
             self.assertNotIn("completed_task", data)
 
 
-        client = PTimeClient("stop")
+        client = PTimeClient("stop", parse_args([]))
         if self.run_client:
             status, data= client.run()
 
