@@ -16,6 +16,46 @@ def format_date(dt):
     return dt.strftime("%Y-%m-%d")
 
 
+def utc(func):
+    def wrapper(input_string):
+        naive_dt = func(input_string)
+        aware_dt = naive_dt.replace(tzinfo=datetime.timezone.utc)
+        return aware_dt
+    return wrapper
+
+
+@utc
+def parse_input_date(input_string):
+    date_format = "%d/%m/%y"
+    try:
+        return datetime.datetime.strptime(input_string, date_format)
+    except ValueError:
+        pass
+
+
+    date_format = "%d/%m/%Y"
+    try:
+        return datetime.datetime.strptime(input_string, date_format)
+    except ValueError:
+        pass
+
+
+    now = datetime.datetime.utcnow()
+    day_month_format = "%d/%m"
+    try:
+        dt = datetime.datetime.strptime(input_string, day_month_format)
+        dt = dt.replace( year = now.year )
+        return dt
+    except ValueError:
+        pass
+
+
+    try:
+        days = int(input_string)
+        return now + datetime.timedelta( days = days)
+    except ValueError:
+        pass
+
 
 class Duration(object):
 

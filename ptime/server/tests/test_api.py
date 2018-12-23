@@ -6,6 +6,7 @@ from django.test import TransactionTestCase, Client
 from django.db.utils import IntegrityError
 
 from ptime.server.models import *
+from ptime.util.time import parse_input_date
 from .context import Context
 
 
@@ -125,3 +126,8 @@ class WorkAPITest(TransactionTestCase):
                                          "project" : self.context.project1.short_name})
         data = json.loads(response.content.decode("utf-8"))
         self.assertEqual(len(data["task_list"]), 1)
+
+        response = client.get(get_url , {"user" : self.context.user1.username,
+                                         "start" : parse_input_date("01/02/2030")})
+        data = json.loads(response.content.decode("utf-8"))
+        self.assertEqual(len(data["task_list"]), 0)

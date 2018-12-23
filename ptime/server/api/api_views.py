@@ -125,8 +125,24 @@ def get(request):
         except Project.DoesNotExist:
             record_query = TaskRecord.objects.none()
 
+    if "start" in request.GET:
+        start_time = django.utils.dateparse.parse_datetime( request.GET["start"] )
+        record_query = record_query.filter( start_time__gte = start_time)
+
+    if "end" in request.GET:
+        end_time = django.utils.dateparse.parse_datetime( request.GET["end"] )
+        record_query = record_query.filter( start_time__lt = end_time)
+
+
     time_range = record_query.aggregate(start_time = Min('start_time'),
                                         end_time = Max('start_time'))
+
+    if end_time:
+        time_range["end_time"] = end_time
+
+    if start_time:
+        time_range["start_time"] = start_time
+
     response = { "task_list" : [ record.to_dict() for record in record_query ],
                  "start_time" : time_range["start_time"],
                  "end_time" : time_range["end_time"]}

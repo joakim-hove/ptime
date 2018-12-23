@@ -3,6 +3,7 @@ import json
 import os
 import requests
 import datetime
+from ptime.util import parse_input_date
 from argparse import ArgumentParser
 
 
@@ -14,7 +15,14 @@ class BaseClient(object):
     def __init__(self, options):
         self.project = options.project
         self.activity = options.activity
+
         self.data = {"user" : self.PTIME_USER }
+        if options.start:
+            self.data["start"] = options.start
+
+        if options.end:
+            self.data["end"] = options.end
+
 
 
     def url(self):
@@ -58,7 +66,7 @@ class StartClient(PostClient):
 
     def __init__(self, options):
         super().__init__(options)
-        if self.project_id is None:
+        if self.project is None:
             raise ValueError("Missing project id")
 
         if self.activity:
@@ -121,25 +129,21 @@ class PTimeClient(object):
         return self.client.run()
 
 
-def make_datetime(input_string):
-    return datetime.datetime.now()
 
-
-
-def parse_args(argv):
+def parse_args(cmd, argv):
     argparser = ArgumentParser()
     argparser.add_argument("project", nargs="?")
     argparser.add_argument("activity", nargs="?")
 
-    argparser.add_argument("--start", type=make_datetime, help="Start time")
-    argparser.add_argument("--end", type=str, help="End time")
+    argparser.add_argument("--start-date", type=parse_input_date, dest="start", help="Start time")
+    argparser.add_argument("--end-date", type=parse_input_date, dest="end", help="End time")
 
     return argparser.parse_args( argv )
 
 
 def run(argv):
     cmd = argv[0]
-    options = parse_args(argv[1:])
+    options = parse_args(cmd, argv[1:])
 
     if not cmd in PTimeClient.commands:
         sys.exit("No such subcommand:{}".format(cmd))
