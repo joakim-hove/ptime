@@ -24,15 +24,15 @@ class ClientTest(TransactionTestCase):
 
 
         client = PTimeClient("stop", parse_args([]))
-        data = client.post_data()
+        data = client.data()
         self.assertIn("user", data)
 
         client = PTimeClient("start", parse_args(["sleipner"]))
-        data = client.post_data()
+        data = client.data()
         self.assertIn("user", data)
 
         client = PTimeClient("start", parse_args(["sleipner", "python3"]))
-        data = client.post_data()
+        data = client.data()
         self.assertIn("user", data)
         self.assertIn("activity", data)
 

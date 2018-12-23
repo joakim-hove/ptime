@@ -115,3 +115,13 @@ class WorkAPITest(TransactionTestCase):
         self.assertTrue(len(data["task_list"]) > 0)
         for task in data["task_list"]:
             self.assertIn("seconds", task)
+
+        response = client.get(get_url , {"user" : self.context.user1.username,
+                                         "project" : "does/not/exist"})
+        data = json.loads(response.content.decode("utf-8"))
+        self.assertEqual(len(data["task_list"]), 0)
+
+        response = client.get(get_url , {"user" : self.context.user1.username,
+                                         "project" : self.context.project1.short_name})
+        data = json.loads(response.content.decode("utf-8"))
+        self.assertEqual(len(data["task_list"]), 1)

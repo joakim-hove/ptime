@@ -12,28 +12,29 @@ class BaseClient(object):
 
 
     def __init__(self, options):
-        self.project_id = options.project
+        self.project = options.project
         self.activity = options.activity
+        self.data = {"user" : self.PTIME_USER }
+
+
+    def url(self):
+        raise NotImplementedError("Each inherited class must implement the url() method")
 
 
 class GetClient(BaseClient):
 
     def __init__(self, options):
         super().__init__(options)
-        self.get_data = {"user" : self.PTIME_USER }
 
     def run(self):
         try:
-            r = requests.get(self.url(), params=self.get_data)
+            r = requests.get(self.url(), params=self.data)
         except:
-            sys.exit("Request to server:{} failed".format(self.PTIME_URL))
+            sys.exit("GET request to server:{} failed".format(self.PTIME_URL))
 
         status_code = r.status_code
         return (status_code, r.text)
 
-
-    def url(self):
-        raise NotImplementedError("Each inherited class must implement the url() method")
 
 
 
@@ -41,20 +42,15 @@ class PostClient(BaseClient):
 
     def __init__(self, options):
         super().__init__(options)
-        self.post_data = {"user" : self.PTIME_USER }
 
     def run(self):
         try:
-            r = requests.post(self.url(), json=self.post_data)
+            r = requests.post(self.url(), json=self.data)
         except:
-            sys.exit("Request to server:{} failed".format(self.PTIME_URL))
+            sys.exit("POST request to server:{} failed".format(self.PTIME_URL))
 
         status_code = r.status_code
         return (status_code, r.text)
-
-
-    def url(self):
-        raise NotImplementedError("Each inherited class must implement the url() method")
 
 
 
@@ -66,7 +62,7 @@ class StartClient(PostClient):
             raise ValueError("Missing project id")
 
         if self.activity:
-            self.post_data["activity"] = options.activity
+            self.data["activity"] = options.activity
 
     def url(self):
         return "{0}/api/task/start/{1}/".format(self.PTIME_URL, self.project_id)
@@ -95,6 +91,9 @@ class TaskListClient(GetClient):
 
     def __init__(self, options):
         super().__init__(options)
+        if self.project:
+            self.data["project"] = self.project
+
 
     def url(self):
         return "{0}/api/get/".format(self.PTIME_URL)
@@ -115,11 +114,8 @@ class PTimeClient(object):
     def __init__(self, cmd, options):
         self.client = self.commands[cmd](options)
 
-    def post_data(self):
-        return self.client.post_data
-
-    def get_data(self):
-        return self.client.get_data()
+    def data(self):
+        return self.client.data
 
     def run(self):
         return self.client.run()

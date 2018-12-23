@@ -118,6 +118,13 @@ def get(request):
     start_time = None
     end_time = None
     record_query = TaskRecord.objects.all()
+    if "project" in request.GET:
+        try:
+            project = Project.objects.get(short_name = request.GET["project"])
+            record_query = record_query.filter(project = project)
+        except Project.DoesNotExist:
+            record_query = TaskRecord.objects.none()
+
     time_range = record_query.aggregate(start_time = Min('start_time'),
                                         end_time = Max('start_time'))
     response = { "task_list" : [ record.to_dict() for record in record_query ],
