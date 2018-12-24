@@ -13,15 +13,7 @@ class BaseClient(object):
 
 
     def __init__(self, options):
-        self.project = options.project
-        self.activity = options.activity
-
         self.data = {"user" : self.PTIME_USER }
-        if options.start:
-            self.data["start"] = options.start
-
-        if options.end:
-            self.data["end"] = options.end
 
 
 
@@ -50,6 +42,14 @@ class PostClient(BaseClient):
 
     def __init__(self, options):
         super().__init__(options)
+        self.project = options.project
+        self.activity = options.activity
+        if options.start:
+            self.data["start"] = str(options.start)
+
+        if options.end:
+            self.data["end"] = str(options.end)
+
 
     def run(self):
         try:
@@ -66,6 +66,7 @@ class StartClient(PostClient):
 
     def __init__(self, options):
         super().__init__(options)
+
         if self.project is None:
             raise ValueError("Missing project id")
 
@@ -73,7 +74,7 @@ class StartClient(PostClient):
             self.data["activity"] = options.activity
 
     def url(self):
-        return "{0}/api/task/start/{1}/".format(self.PTIME_URL, self.project_id)
+        return "{0}/api/task/start/{1}/".format(self.PTIME_URL, self.project)
 
 
 
@@ -99,8 +100,16 @@ class TaskListClient(GetClient):
 
     def __init__(self, options):
         super().__init__(options)
-        if self.project:
-            self.data["project"] = self.project
+        if options.project:
+            self.data["project"] = options.project
+
+        if options.start:
+            self.data["start"] = str(options.start)
+
+        if options.end:
+            self.data["end"] = str(options.end)
+
+
 
 
     def url(self):

@@ -6,7 +6,7 @@ from django.test import TransactionTestCase, Client
 from django.db.utils import IntegrityError
 
 from ptime.server.models import *
-from ptime.util.time import parse_input_date
+from ptime.util.time import parse_input_date, parse_input_time
 from .context import Context
 
 
@@ -47,6 +47,9 @@ class WorkAPITest(TransactionTestCase):
         response = client.post(url404, json.dumps(valid_params), content_type = "application/json")
         self.assertEqual(response.status_code, 404)
 
+        valid_params["start"] = str(parse_input_time("-1"))
+        response = client.post(url2, json.dumps(valid_params), content_type="application/json")
+        self.assertEqual(response.status_code, 201)
 
 
     def test_stop(self):

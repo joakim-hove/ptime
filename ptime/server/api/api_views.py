@@ -2,7 +2,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 from django.db.models import Max, Min
-from django.utils import timezone
+from django.utils import timezone, dateparse
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
@@ -37,12 +37,13 @@ def start_task(request, project_id):
         activity = start_project.default_activity
 
 
-    if "start_time" in params:
-        start_time = timezone.now()
+    if "start" in params:
+        start_time = dateparse.parse_datetime(params["start"])
     else:
         start_time = timezone.now()
 
     completed_task = WIP.complete(user)
+    print(completed_task)
     wip = WIP.start(user, start_project, start_time, activity = activity)
 
     started_task = {"project" : wip.project.short_name,
@@ -69,8 +70,8 @@ def stop_task(request):
     except User.DoesNotExist:
         return HttpResponse("Invalid user:{}".format(params["user"]), status=403)
 
-    if "end_time" in params:
-        pass
+    if "end" in params:
+        end_time = dateparse.parse_datetime(params["end"])
     else:
         end_time = None
 
