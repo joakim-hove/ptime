@@ -1,4 +1,6 @@
+import re
 import datetime
+import time
 import django.utils.dateparse
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 TIME_ZONE = "Europe/Oslo"
@@ -21,6 +23,14 @@ def utc(func):
         naive_dt = func(input_string)
         aware_dt = naive_dt.replace(tzinfo=datetime.timezone.utc)
         return aware_dt
+    return wrapper
+
+
+def add_date(func):
+    def wrapper(input_string):
+        t = func(input_string)
+        today = datetime.date.today()
+        return datetime.datetime(today.year, today.month, today.day, t.tm_hour, t.tm_min, t.tm_sec)
     return wrapper
 
 
@@ -55,6 +65,43 @@ def parse_input_date(input_string):
         return now + datetime.timedelta( days = days)
     except ValueError:
         pass
+
+
+@utc
+def parse_input_time(input_string):
+    try:
+       t = time.strptime(input_string, "%H:%M")
+       today = datetime.date.today()
+       return datetime.datetime(today.year, today.month, today.day, t.tm_hour, t.tm_min, t.tm_sec)
+    except ValueError:
+        pass
+
+    now = datetime.datetime.utcnow()
+    time_re = re.compile("^(?P<sign>[+-])(?P<hours>\d+):(?P<minutes>\d+)$")
+    match_obj = time_re.match(input_string)
+    if match_obj:
+        hours = int( match_obj.group("hours"))
+        minutes = int(match_obj.group("minutes"))
+        sign = match_obj.group("sign")
+        seconds = hours * 3600 + minutes * 60
+        if sign == "-":
+            seconds *= -1
+
+        return now + datetime.timedelta(seconds = seconds)
+
+    time_re = re.compile("^(?P<sign>[+-])(?P<hours>\d+)$")
+    match_obj = time_re.match(input_string)
+    if match_obj:
+        hours = int( match_obj.group("hours"))
+        sign = match_obj.group("sign")
+        seconds = hours * 3600
+        if sign == "-":
+            seconds *= -1
+
+        return now + datetime.timedelta(seconds = seconds)
+
+
+
 
 
 class Duration(object):

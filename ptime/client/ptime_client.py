@@ -3,7 +3,7 @@ import json
 import os
 import requests
 import datetime
-from ptime.util import parse_input_date
+from ptime.util import parse_input_date, parse_input_time
 from argparse import ArgumentParser
 
 
@@ -132,21 +132,27 @@ class PTimeClient(object):
 
 def parse_args(cmd, argv):
     argparser = ArgumentParser()
-    argparser.add_argument("project", nargs="?")
-    argparser.add_argument("activity", nargs="?")
+    if cmd in ["start", "stop"]:
+        argparser.add_argument("project", nargs="?")
+        argparser.add_argument("activity", nargs="?")
+        argparser.add_argument("--start", type=parse_input_time, dest="start", help="Start time")
+        argparser.add_argument("--end", type=parse_input_time, dest="end", help="End time")
 
-    argparser.add_argument("--start-date", type=parse_input_date, dest="start", help="Start time")
-    argparser.add_argument("--end-date", type=parse_input_date, dest="end", help="End time")
+    if cmd in ["list", "sum"]:
+        argparser.add_argument("project", nargs="?")
+        argparser.add_argument("--start", type=parse_input_date, dest="start", help="Start time")
+        argparser.add_argument("--end", type=parse_input_date, dest="end", help="End time")
 
     return argparser.parse_args( argv )
 
 
 def run(argv):
     cmd = argv[0]
-    options = parse_args(cmd, argv[1:])
-
     if not cmd in PTimeClient.commands:
         sys.exit("No such subcommand:{}".format(cmd))
+
+    options = parse_args(cmd, argv[1:])
+
 
     client = PTimeClient(cmd, options)
     status_code, text = client.run()
