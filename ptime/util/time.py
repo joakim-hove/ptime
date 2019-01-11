@@ -6,6 +6,9 @@ DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 TIME_ZONE = "Europe/Oslo"
 
 def parse_date(date_str):
+    if date_str is None:
+        return None
+
     dt = django.utils.dateparse.parse_datetime(date_str)
     return dt
 
@@ -15,6 +18,9 @@ def format_time(dt):
     return dt.strftime("%H:%M")
 
 def format_date(dt):
+    if dt is None:
+        return "[  Now   >"
+
     return dt.strftime("%Y-%m-%d")
 
 
