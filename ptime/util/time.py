@@ -7,20 +7,54 @@ import pytz
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 TIME_ZONE = "Europe/Oslo"
 
+
+
+def is_aware(dt):
+    if hasattr(dt, "utcoffset"):
+        offset = dt.utcoffset()
+        if not offset is None:
+            return True
+
+    if hasattr(dt, "tzinfo"):
+        if dt.tzinfo:
+            return True
+
+    return False
+
+
+def change_tzone(dt, tzone):
+    if not is_aware(dt):
+        raise ValueError("The input datetime is not aware")
+
+    dt_naive = datetime.datetime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond )
+    dt_tzone = tzone.localize(dt_naive)
+    delta = dt - dt_tzone
+    dt_naive += delta
+
+    return tzone.localize(dt_naive)
+
+
 def parse_date(date_str):
     if date_str is None:
         return None
 
     dt = django.utils.dateparse.parse_datetime(date_str)
-    return dt
+    if not is_aware(dt):
+        raise ValueError("The date string: {} did not have timezone info".format(date_str))
+    tzone = pytz.timezone(TIME_ZONE)
+    return change_tzone(dt, tzone)
+
 
 def format_time(dt):
     return dt.strftime("%H:%M")
+
 
 def format_date(dt):
     if dt is None:
         return "[  Now   >"
 
+    if not is_aware(dt):
+        raise ValueError("Internal error - naive datetime object encountered")
     return dt.strftime("%Y-%m-%d")
 
 
@@ -32,12 +66,13 @@ def localtime(func):
     return wrapper
 
 
-def add_date(func):
-    def wrapper(input_string):
-        t = func(input_string)
-        today = datetime.date.today()
-        return datetime.datetime(today.year, today.month, today.day, t.tm_hour, t.tm_min, t.tm_sec)
-    return wrapper
+# Unused?
+#def add_date(func):
+#    def wrapper(input_string):
+#        t = func(input_string)
+#        today = datetime.date.today()
+#        return datetime.datetime(today.year, today.month, today.day, t.tm_hour, t.tm_min, t.tm_sec)
+#    return wrapper
 
 
 @localtime
@@ -82,7 +117,7 @@ def parse_input_time(input_string):
     except ValueError:
         pass
 
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.now()
     time_re = re.compile("^(?P<sign>[+-])(?P<hours>\d+):(?P<minutes>\d+)$")
     match_obj = time_re.match(input_string)
     if match_obj:

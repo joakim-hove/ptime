@@ -13,7 +13,10 @@ class BaseClient(object):
 
 
     def __init__(self, options):
-        self.data = {"user" : self.PTIME_USER }
+        if options.user:
+            self.data = {"user" : options.user }
+        else:
+            self.data = {"user" : self.PTIME_USER }
 
 
 
@@ -141,14 +144,14 @@ class PTimeClient(object):
 
 def parse_args(cmd, argv):
     argparser = ArgumentParser()
+    argparser.add_argument("project", nargs="?")
+    argparser.add_argument("--user", type=str)
     if cmd in ["start", "stop"]:
-        argparser.add_argument("project", nargs="?")
         argparser.add_argument("activity", nargs="?")
         argparser.add_argument("--start", type=parse_input_time, dest="start", help="Start time")
         argparser.add_argument("--end", type=parse_input_time, dest="end", help="End time")
 
     if cmd in ["list", "sum"]:
-        argparser.add_argument("project", nargs="?")
         argparser.add_argument("--start", type=parse_input_date, dest="start", help="Start time")
         argparser.add_argument("--end", type=parse_input_date, dest="end", help="End time")
 

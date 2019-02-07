@@ -43,7 +43,6 @@ def start_task(request, project_id):
         start_time = timezone.now()
 
     completed_task = WIP.complete(user)
-    print(completed_task)
     wip = WIP.start(user, start_project, start_time, activity = activity)
 
     started_task = {"project" : wip.project.short_name,
