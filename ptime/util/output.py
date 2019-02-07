@@ -14,7 +14,7 @@ def fmt_task(prefix, task):
     if "end_time" in task:
         end_time = parse_date(task["end_time"])
     else:
-        now = django.utils.timezone.now()
+        now = django.utils.timezone.localtime()
         dt = now - start_time
         if dt.total_seconds() > 1:
             end_time = now

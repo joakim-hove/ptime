@@ -2,6 +2,8 @@ import re
 import datetime
 import time
 import django.utils.dateparse
+import pytz
+
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 TIME_ZONE = "Europe/Oslo"
 
@@ -13,8 +15,6 @@ def parse_date(date_str):
     return dt
 
 def format_time(dt):
-    diff = datetime.datetime.now() - datetime.datetime.utcnow()
-    dt += diff
     return dt.strftime("%H:%M")
 
 def format_date(dt):
@@ -24,10 +24,10 @@ def format_date(dt):
     return dt.strftime("%Y-%m-%d")
 
 
-def utc(func):
+def localtime(func):
     def wrapper(input_string):
         naive_dt = func(input_string)
-        aware_dt = naive_dt.replace(tzinfo=datetime.timezone.utc)
+        aware_dt = pytz.timezone(TIME_ZONE).localize(naive_dt)
         return aware_dt
     return wrapper
 
@@ -40,7 +40,7 @@ def add_date(func):
     return wrapper
 
 
-@utc
+@localtime
 def parse_input_date(input_string):
     date_format = "%d/%m/%y"
     try:
@@ -73,7 +73,7 @@ def parse_input_date(input_string):
         pass
 
 
-@utc
+@localtime
 def parse_input_time(input_string):
     try:
        t = time.strptime(input_string, "%H:%M")
