@@ -8,6 +8,19 @@ from django.utils import timezone
 
 from ptime.util import *
 
+
+class Invoice(Model):
+    start_date = DateField()
+    end_date = DateField()
+    create_date = DateField( default = datetime.date.today )
+    fiken_id = IntegerField(unique = True)
+    project = ForeignKey("Project", null=True, on_delete=SET_NULL)
+
+    def __str__(self):
+        return "Invoice: {}".format(self.fiken_id)
+
+
+
 class Project(Model):
     short_name = CharField(max_length=16, unique=True)
     name = CharField(max_length=80)
