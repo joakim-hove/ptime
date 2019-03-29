@@ -25,7 +25,6 @@ class Project(Model):
     short_name = CharField(max_length=16, unique=True)
     name = CharField(max_length=80)
     start_time = DateField(default = datetime.date.today)
-    description = CharField(max_length=512, blank=True, null=True)
     default_activity = ForeignKey("Activity", blank=True, null=True, on_delete=SET_NULL, related_name="default_activity")
 
 
@@ -37,7 +36,6 @@ class Project(Model):
 class Activity(Model):
     short_name = CharField(max_length=16)
     start_time = DateField(default = datetime.date.today)
-    description = CharField(max_length=512, blank=True, null=True)
     project = ForeignKey(Project, on_delete=CASCADE)
 
     def __str__(self):

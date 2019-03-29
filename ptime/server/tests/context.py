@@ -13,19 +13,15 @@ class Context(object):
                                          password = "Secret")
 
         self.project1 = Project.objects.create(short_name = "opm",
-                                              name = "OPM Project",
-                                              description = "Long description")
+                                              name = "OPM Project")
 
         self.project2 = Project.objects.create(short_name = "ERT",
-                                              name = "OPM Project",
-                                              description = "Long description")
+                                              name = "OPM Project")
 
         self.activity1 = Activity.objects.create(short_name = "operater",
-                                                description = "Implement support for OPERATER keyword",
                                                 project = self.project1)
 
         self.activity2 = Activity.objects.create(short_name = "operater",
-                                                description = "Implement support for OPERATER keyword",
                                                 project = self.project2)
 
         self.record1 = TaskRecord.objects.create(start_time=timezone.now() - datetime.timedelta(hours=6),
