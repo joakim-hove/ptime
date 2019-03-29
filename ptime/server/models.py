@@ -26,6 +26,7 @@ class Project(Model):
     name = CharField(max_length=80)
     start_time = DateField(default = datetime.date.today)
     default_activity = ForeignKey("Activity", blank=True, null=True, on_delete=SET_NULL, related_name="default_activity")
+    notes = TextField(null = True, blank=True)
 
 
     def __str__(self):
