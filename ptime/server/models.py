@@ -17,7 +17,7 @@ class Invoice(Model):
     project = ForeignKey("Project", null=True, on_delete=SET_NULL)
 
     def __str__(self):
-        return "Invoice: {}".format(self.fiken_id)
+        return "Project: {}  Period: {}-{}  FikenID: {}".format(self.project, self.start_date, self.end_date, self.fiken_id)
 
 
 
