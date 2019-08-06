@@ -15,6 +15,8 @@ class Invoice(Model):
     create_date = DateField( default = datetime.date.today )
     fiken_id = IntegerField(unique = True)
     project = ForeignKey("Project", null=True, on_delete=SET_NULL)
+    notes = TextField(null = True, blank=True)
+
 
     def __str__(self):
         return "{}: {}  {} - {}".format(self.fiken_id, self.project, self.start_date, self.end_date)
