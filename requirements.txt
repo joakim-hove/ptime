@@ -1,4 +1,4 @@
-django==2.1.11
+django==2.2.13
 dj-static
 dj-database-url
 djangorestframework==3.9.1
